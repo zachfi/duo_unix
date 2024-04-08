@@ -6,7 +6,7 @@ pkgname=duo_unix
 pkgver=2.0.3
 pkgrel=1
 pkgdesc='Login utility and PAM module for Duo Security two-factor authentication'
-arch=('i686' 'x86_64' 'armv7h')
+arch=('i686' 'x86_64' 'armv7h' 'aarch64')
 url='https://www.duosecurity.com/docs/duounix'
 license=('custom:GPL2')
 depends=('pam')
@@ -18,26 +18,26 @@ source=("https://dl.duosecurity.com/duo_unix-${pkgver}.tar.gz")
 sha1sums=('92d59155b20e49782576b65f584c884a282c9b0e')
 
 build() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
+	cd "${srcdir}/${pkgname}-${pkgver}"
 
-  # By default, login_duo is installed setuid root with system-wide config files
-  # Using nobody as the privsep user to match the default openssh package
-  # More config options here: https://github.com/duosecurity/duo_unix
-  ./configure \
-      --prefix=/usr \
-      --sbindir=/usr/bin \
-      --with-pam=/usr/lib/security \
-      --with-privsep-user=nobody
+	# By default, login_duo is installed setuid root with system-wide config files
+	# Using nobody as the privsep user to match the default openssh package
+	# More config options here: https://github.com/duosecurity/duo_unix
+	./configure \
+		--prefix=/usr \
+		--sbindir=/usr/bin \
+		--with-pam=/usr/lib/security \
+		--with-privsep-user=nobody
 
-  make
+	make
 }
 
 package() {
-  cd "${srcdir}/${pkgname}-${pkgver}"
-  make DESTDIR="${pkgdir}/" install
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	make DESTDIR="${pkgdir}/" install
 
-  # The license is GPL, but with a couple clarifications/exceptions (link the LICENSE file to /usr/share/licenses)
-  # This link won't point to anything if the !docs option is specified
-  install -d -m755 "${pkgdir}/usr/share/licenses/${pkgname}"
-  ln -s "/usr/share/doc/${pkgname}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+	# The license is GPL, but with a couple clarifications/exceptions (link the LICENSE file to /usr/share/licenses)
+	# This link won't point to anything if the !docs option is specified
+	install -d -m755 "${pkgdir}/usr/share/licenses/${pkgname}"
+	ln -s "/usr/share/doc/${pkgname}/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }
